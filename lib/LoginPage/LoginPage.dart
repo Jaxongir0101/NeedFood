@@ -10,13 +10,27 @@ class LoginPage extends StatefulWidget {
 
 class _LOginPageState extends State<LoginPage> {
   Color mainColor = Color.fromARGB(0, 89, 183, 238);
+  final _fromKey = GlobalKey<FormState>();
+  String? _email, _password;
+
+  void doLoginIn() {
+    if (_fromKey.currentState!.validate()) {
+      _fromKey.currentState!.save();
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()) );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: ListView(
+    MediaQueryData _mediaQueryData = MediaQuery.of(context);
+
+    var size = _mediaQueryData.size;
+    var orientation = _mediaQueryData.orientation;
+
+    return ListView(
       children: [
         Container(
-          height: 180,
+          height: size.height * 0.2,
           width: double.infinity,
           decoration: const BoxDecoration(
             image: DecorationImage(
@@ -47,7 +61,7 @@ class _LOginPageState extends State<LoginPage> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(36, 8, 0, 0),
+          padding: const EdgeInsets.fromLTRB(36, 4, 0, 0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -61,73 +75,65 @@ class _LOginPageState extends State<LoginPage> {
           "Sign In",
           textAlign: TextAlign.center,
           style: TextStyle(
-              color: Colors.black, fontSize: 36, fontWeight: FontWeight.w600),
+              color: Colors.black, fontSize: 34, fontWeight: FontWeight.w600),
         ),
-        //  Image.asset('assets/images/platter.png'),
-
-        Container(
-          padding: EdgeInsets.fromLTRB(29, 29, 29, 12),
-          child: Container(
-            width: double.infinity,
-            height: 48,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.blue.withOpacity(0.1),
-                  spreadRadius: 4,
-                  offset: Offset(1, 1),
+        Form(
+          key: _fromKey,
+          child: Column(
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 30, vertical: 4),
+                child: TextFormField(
+                  decoration: InputDecoration(
+                    labelText: "Email",
+                    border: OutlineInputBorder(
+                      borderRadius: const BorderRadius.all(
+                        const Radius.circular(10.0),
+                      ),
+                      borderSide: BorderSide(
+                        width: 1,
+                        style: BorderStyle.none,
+                      ),
+                    ),
+                  ),
+                  textInputAction: TextInputAction.done,
+                  validator: (String? value) =>
+                      (value != null && !value.contains('@'))
+                          ? "Please enter a valid  email"
+                          : null,
+                  onSaved: (value) => _email = value,
                 ),
-              ],
-              border: Border.all(
-                color: Colors.blue,
-                width: 1.5,
               ),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
-              child: TextField(
-                keyboardType: TextInputType.name,
-                onChanged: (value) {},
-                style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87),
-                decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hoverColor: Colors.blue,
-                    hintStyle: TextStyle(color: Colors.black),
-                    hintText: "UserName"),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 30, vertical: 4),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      labelText: "Password",
+                      border: OutlineInputBorder(
+                        borderRadius: const BorderRadius.all(
+                          const Radius.circular(10.0),
+                        ),
+                        borderSide: BorderSide(
+                          width: 1,
+                          style: BorderStyle.none,
+                        ),
+                      ),
+                    ),
+                    validator: (String? value) =>
+                        (value != null && value.length < 6)
+                            ? "Must be at least 6 character"
+                            : null,
+                    onSaved: (value) => _password = value,
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
         ),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 29),
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 29),
-            width: double.infinity,
-            height: 48,
-            decoration: BoxDecoration(
-              color: Colors.grey.shade300,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: TextField(
-              onChanged: (value) {},
-              style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black87),
-              decoration: InputDecoration(
-                  border: InputBorder.none,
-                  hoverColor: Colors.blue,
-                  hintStyle: TextStyle(color: Colors.black),
-                  hintText: "Enter your Password"),
-            ),
-          ),
-        ),
-
         TextButton(
           onPressed: () {},
           child: Text(
@@ -135,21 +141,19 @@ class _LOginPageState extends State<LoginPage> {
             style: TextStyle(color: Colors.black54),
           ),
         ),
-        SizedBox(height: 6),
         Container(
           padding: EdgeInsets.symmetric(horizontal: 29),
           width: double.infinity,
-          height: 45,
+          height: size.height * 0.055,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(24.5),
           ),
           child: ElevatedButton(
             onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: ((context) => HomePage()),
-                ),
-              );
+             doLoginIn();
+                
+             
+              
             },
             child: Text(
               "Login",
@@ -170,7 +174,7 @@ class _LOginPageState extends State<LoginPage> {
           ),
         ),
         Padding(
-          padding: EdgeInsets.fromLTRB(29, 32, 0, 4),
+          padding: EdgeInsets.fromLTRB(29, size.height * 0.03, 0, 4),
           child: Row(
             children: [
               Padding(
@@ -182,7 +186,7 @@ class _LOginPageState extends State<LoginPage> {
           ),
         ),
         Padding(
-          padding: EdgeInsets.fromLTRB(29, 0, 29, 10),
+          padding: EdgeInsets.fromLTRB(29, 0, 29, size.height * 0.000),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -218,6 +222,6 @@ class _LOginPageState extends State<LoginPage> {
           ),
         )
       ],
-    ));
+    );
   }
 }
